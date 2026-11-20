@@ -12,7 +12,7 @@ jobs:
 
       - name: Configurar Senha do Usuário
         run: |
-          echo "runner:2060" | sudo chpasswd
+          echo "runner:10879908" | sudo chpasswd
           sudo usermod -aG sudo runner
 
       - name: Instalar Interface e VNC
