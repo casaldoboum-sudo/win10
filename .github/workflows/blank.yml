@@ -5,8 +5,8 @@ on:
 
 jobs:
   build:
-  runs-on: ubuntu-latest
-  steps:
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout Repositório
         uses: actions/checkout@v4
 
@@ -26,13 +26,12 @@ jobs:
           echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
           sudo apt update
           sudo apt install -y ngrok
-          
-       - name: Iniciar Cloudflare Tunnel
-         uses: cloudflare/cloudflared-action@master
-         with:
-         token: ${{ secrets.CLOUDFLARE_TOKEN }}
-         command: tunnel --url tcp://localhost:5901
-     
+
+      - name: Iniciar Cloudflare Tunnel
+        uses: cloudflare/cloudflared-action@master
+        with:
+          token: ${{ secrets.CLOUDFLARE_TOKEN }}
+          command: tunnel --url tcp://localhost:5901
 
       - name: Expor VNC via Ngrok
         run: ngrok tcp 5901
