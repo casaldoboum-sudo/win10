@@ -26,8 +26,5 @@ jobs:
           authkey: ${{ secrets.TS_AUTHKEY }}
           hostname: github-runner-vnc
 
-      - name: Expor VNC via Ngrok
-        run: ngrok tcp 5901
-
       - name: Manter Máquina Ativa
         run: sleep infinity
