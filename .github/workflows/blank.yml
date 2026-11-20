@@ -1,16 +1,14 @@
- name: Virtual PC Online
+name: Teste Básico
 
 on:
   workflow_dispatch:
-    inputs:
-      access_password:
-        description: 'Defina uma senha para o usuário (ou...' # cortado na imagem
-        required: true
-        default: '123456'
 
 jobs:
-  build: # 'ld:' na imagem (cortado à esquerda)
-    runs-on: ubuntu-latest # 'uns-on: ubuntu-l...st' na imagem
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar ambiente
+        run: echo "Workflow funcionando!"
     timeout-minutes: 360 # 'imeout-minutes...60 # ...tém a máquina ligada por até...' na imagem
 
     steps:
