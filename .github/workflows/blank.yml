@@ -1,4 +1,4 @@
-name: Teste Básico
+name: Configurar Ambiente
 
 on:
   workflow_dispatch:
@@ -7,39 +7,31 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Verificar ambiente
-        run: echo "Workflow funcionando!"
-    timeout-minutes: 360 # 'imeout-minutes...60 # ...tém a máquina ligada por até...' na imagem
-
-      - name: Checkout Repository
+      - name: Checkout Repositório
         uses: actions/checkout@v4
 
       - name: Configurar Senha do Usuário
         run: |
-          echo "runner:${{ github.event.inputs.access_password }}" | sudo chpasswd # final cortado na imagem
+          echo "runner:${{ github.event.inputs.access_password }}" | sudo chpasswd
           sudo usermod -aG sudo runner
 
-      - name: Instalar Servidor de Área de Trabalho e Ferramentas # final cortado na imagem
+      - name: Instalar Interface e VNC
         run: |
           sudo apt update
-          sudo apt install -y xfce4 xfce4-goodies tightvncserver # final cortado na imagem
+          sudo apt install -y xfce4 xfce4-goodies tightvncserver
 
-      - name: Instalar o Ngrok
+      - name: Instalar Ngrok
         uses: ngrok/ngrok-action@v1
         with:
-          auth-token: ${{ secrets.NGROK_AUTHTOKEN }}
+          authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
 
       - name: Iniciar Servidor VNC
         run: |
-          vncserver :1 -geometry 1280x720 -depth 24 & # ':1' coberto pela marca d'água
-          echo "VNC iniciado na porta 5901" # início coberto pela marca d'água
+          vncserver :1 -geometry 1280x720 -depth 24
+          echo "VNC iniciado na porta 5901"
 
-      - name: Expor VNC via Ngrok (TCP)
-        run: |
-          ngrok tcp 5901 &
+      - name: Expor VNC via Ngrok
+        run: ngrok tcp 5901
 
-      - name: Manter a Máquina Ativa
-        run: |
-          echo "PC Virtual pronto! Use um cliente VNC (com..." # final cortado na imagem
-          sleep infinity
-          
+      - name: Manter Máquina Ativa
+        run: sleep infinity
