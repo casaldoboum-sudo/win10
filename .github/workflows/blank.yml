@@ -29,7 +29,8 @@ jobs:
             
       - name: Iniciar Servidor VNC
         run: |
-          echo "10879908" | vncpasswd -f > ~/.vnc/passwd
+         mkdir -p ~/.vnc 
+         echo "10879908" | vncpasswd -f > ~/.vnc/passwd
           echo "VNC iniciado na porta 5901"
 
       - name: Expor VNC via Ngrok
