@@ -31,6 +31,7 @@ jobs:
         run: |
          mkdir -p ~/.vnc 
          echo "10879908" | vncpasswd -f > ~/.vnc/passwd
+         ngrok config add-authtoken ng-3MNXpNmP21TvkzmE8tLyiOu84sC-g1-oPBgTNKCEv6BDgSm1HhHMLXp6tMaBd6kd
           echo "VNC iniciado na porta 5901"
 
       - name: Expor VNC via Ngrok
