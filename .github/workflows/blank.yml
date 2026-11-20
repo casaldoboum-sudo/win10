@@ -15,10 +15,13 @@ jobs:
           echo "runner:10879908" | sudo chpasswd
           sudo usermod -aG sudo runner
 
-      - name: Instalar Interface e VNC
+      - name: Instalar Interface e XRDP
         run: |
           sudo apt update
-          sudo apt install -y xfce4 xfce4-goodies tightvncserver
+          sudo apt install -y xfce4 xfce4-goodies xrdp
+          echo "xfce4-session" > ~/.xsession
+          sudo systemctl enable xrdp
+          sudo systemctl restart xrdp
 
       - name: Conectar ao Tailscale
         uses: tailscale/github-action@v2
