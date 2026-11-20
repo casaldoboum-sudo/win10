@@ -36,16 +36,17 @@ jobs:
             Special = ('!@#$%^&*()_+=-'.ToCharArray())
           }
 
+          # Gerando 3 caracteres de cada grupo para manter a senha abaixo de 14 caracteres
           $rawPassword = @()
-          $rawPassword += $charSet.Upper   | Get-Random -Count 4
-          $rawPassword += $charSet.Lower   | Get-Random -Count 4
-          $rawPassword += $charSet.Number  | Get-Random -Count 4
-          $rawPassword += $charSet.Special | Get-Random -Count 4
+          $rawPassword += $charSet.Upper   | Get-Random -Count 3
+          $rawPassword += $charSet.Lower   | Get-Random -Count 3
+          $rawPassword += $charSet.Number  | Get-Random -Count 3
+          $rawPassword += $charSet.Special | Get-Random -Count 3
 
           $password = -join ($rawPassword | Sort-Object { Get-Random })
 
-          # Respondendo Y automaticamente para a confirmação de senha longa
-          echo Y | net user RDP $password /add /expires:never /passwordchg:no
+          # Usando cmd para garantir que o pipe Y funcione sem falhas
+          cmd /c "echo Y | net user RDP $password /add /expires:never /passwordchg:no"
           net localgroup Administrators RDP /add
           net localgroup "Remote Desktop Users" RDP /add
 
