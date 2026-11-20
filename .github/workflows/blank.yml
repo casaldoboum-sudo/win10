@@ -31,7 +31,11 @@ jobs:
         run: |
          mkdir -p ~/.vnc 
          echo "10879908" | vncpasswd -f > ~/.vnc/passwd
-         ngrok config add-authtoken 3MNgHPrh7mVNuZd3a7uoDHqEhEj_3UGnQi4m7yeBpXVLFvSEs
+         name: Iniciar Cloudflare Tunnel
+uses: cloudflare/cloudflared-action@master
+with:
+token: ${{ secrets.CLOUDFLARE_TOKEN }}
+command: tunnel --url tcp://localhost:5901
           echo "VNC iniciado na porta 5901"
 
       - name: Expor VNC via Ngrok
