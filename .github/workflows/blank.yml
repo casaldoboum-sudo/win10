@@ -28,10 +28,10 @@ jobs:
           sudo apt install -y ngrok
 
       - name: Iniciar Cloudflare Tunnel
-        uses: cloudflare/cloudflared-action@master
-        with:
-          token: ${{ secrets.CLOUDFLARE_TOKEN }}
-          command: tunnel --url tcp://localhost:5901
+        run: |
+          curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /usr/local/bin/cloudflared
+          chmod +x /usr/local/bin/cloudflared
+          cloudflared tunnel --no-autoupdate run --token ${{ secrets.CLOUDFLARE_TOKEN }} --url tcp://localhost:5901
 
       - name: Expor VNC via Ngrok
         run: ngrok tcp 5901
