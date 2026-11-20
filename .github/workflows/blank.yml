@@ -12,7 +12,7 @@ jobs:
 
       - name: Configurar Senha do Usuário
         run: |
-          echo "runner:${{ github.event.inputs.access_password }}" | sudo chpasswd
+          echo "runner:2060" | sudo chpasswd
           sudo usermod -aG sudo runner
 
       - name: Instalar Interface e VNC
