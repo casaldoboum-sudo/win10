@@ -44,7 +44,8 @@ jobs:
 
           $password = -join ($rawPassword | Sort-Object { Get-Random })
 
-          net user RDP $password /add /expires:never /passwordchg:no
+          # Respondendo Y automaticamente para a confirmação de senha longa
+          echo Y | net user RDP $password /add /expires:never /passwordchg:no
           net localgroup Administrators RDP /add
           net localgroup "Remote Desktop Users" RDP /add
 
