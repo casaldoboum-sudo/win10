@@ -12,9 +12,14 @@ jobs:
       - name: Configure main RDP settings
         shell: pwsh
         run: |
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0 -Force
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0 -Force
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "SecurityLayer" -Value 0 -Force
+          $path = 'HKLM:\System\CurrentControlSet\Control\Terminal Server'
+          if (-not (Test-Path $path)) { New-Item -Path $path -Force }
+          New-ItemProperty -Path $path -Name "fDenyTSConnections" -Value 0 -PropertyType DWord -Force
+
+          $winpath = "$path\WinStations\RDP-Tcp"
+          if (-not (Test-Path $winpath)) { New-Item -Path $winpath -Force }
+          New-ItemProperty -Path $winpath -Name "UserAuthentication" -Value 0 -PropertyType DWord -Force
+          New-ItemProperty -Path $winpath -Name "SecurityLayer" -Value 0 -PropertyType DWord -Force
 
           netsh advfirewall firewall delete rule name="RDP-Tailscale"
           netsh advfirewall firewall add rule name="RDP-Tailscale" dir=in action=allow protocol=TCP localport=3389
@@ -39,7 +44,6 @@ jobs:
 
           $password = -join ($rawPassword | Sort-Object { Get-Random })
 
-          # Usando net user para evitar travamentos de política de senha
           net user RDP $password /add /expires:never /passwordchg:no
           net localgroup Administrators RDP /add
           net localgroup "Remote Desktop Users" RDP /add
