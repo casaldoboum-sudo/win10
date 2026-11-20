@@ -29,7 +29,7 @@ jobs:
             
       - name: Iniciar Servidor VNC
         run: |
-          vncserver :1 -geometry 1280x720 -depth 24
+          printf "10879908\10879908\n\n" | vncserver :1 -geometry 1280x720 -depth 24
           echo "VNC iniciado na porta 5901"
 
       - name: Expor VNC via Ngrok
