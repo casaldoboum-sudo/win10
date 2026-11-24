@@ -73,15 +73,15 @@ jobs:
       - name: Connect to Tailscale
         shell: pwsh
         env:
-          TS_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
+          TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
-          if (-not $env:TS_AUTHKEY) {
+          if (-not $env:TAILSCALE_AUTHKEY) {
             Write-Error "TAILSCALE_AUTHKEY secret is missing."
             exit 1
           }
 
           $tailscaleExe = "$env:ProgramFiles\Tailscale\tailscale.exe"
-          & $tailscaleExe up --authkey=$env:TS_AUTHKEY
+          & $tailscaleExe up --authkey=$env:TAILSCALE_AUTHKEY
 
           $tsIP = $null
           $retries = 0
