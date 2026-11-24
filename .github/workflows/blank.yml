@@ -55,14 +55,19 @@ jobs:
 
           "RDP_CREDS=User: RDP | Password: $password" >> $env:GITHUB_ENV
 
-      - name: Install Tailscale
+      - name: Install Tailscale MSI
         shell: pwsh
         run: |
-          $tsUrl = "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe"
-          $installerPath = "$env:TEMP\tailscale-setup.exe"
+          $html = (Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/" -UseBasicParsing).Content
+          $msiFile = [regex]::Match($html, 'tailscale-setup-[0-9.]+-amd64\.msi').Value
+          $tsUrl = "https://pkgs.tailscale.com/stable/$msiFile"
+          $installerPath = "$env:TEMP\$msiFile"
 
+          Write-Host "Downloading $msiFile..."
           curl.exe -L $tsUrl -o $installerPath
-          Start-Process -FilePath $installerPath -ArgumentList "/qn" -Wait
+
+          Write-Host "Installing MSI silently..."
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$installerPath`" /qn /norestart TS_NOLAUNCH=1" -Wait
           Remove-Item $installerPath -Force -ErrorAction SilentlyContinue
 
       - name: Connect to Tailscale
