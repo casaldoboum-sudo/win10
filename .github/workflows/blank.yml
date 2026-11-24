@@ -80,12 +80,21 @@ jobs:
             exit 1
           }
 
+          $svc = Get-Service -Name "Tailscale" -ErrorAction SilentlyContinue
+          if ($svc -and $svc.Status -ne "Running") {
+            Start-Service -Name "Tailscale"
+            Start-Sleep -Seconds 3
+          }
+
           $tailscaleExe = "$env:ProgramFiles\Tailscale\tailscale.exe"
-          & $tailscaleExe up --authkey=$env:TAILSCALE_AUTHKEY
+          & $tailscaleExe up --authkey=$env:TAILSCALE_AUTHKEY --unattended
+          if ($LASTEXITCODE -ne 0) {
+            Write-Warning "tailscale up exited with code $LASTEXITCODE"
+          }
 
           $tsIP = $null
           $retries = 0
-          while (-not $tsIP -and $retries -lt 15) {
+          while (-not $tsIP -and $retries -lt 20) {
             $tsIP = (& $tailscaleExe ip -4 2>$null) | Select-Object -First 1
             if (-not $tsIP) {
               Start-Sleep -Seconds 3
@@ -94,6 +103,8 @@ jobs:
           }
 
           if (-not $tsIP) {
+            Write-Host "=== Tailscale Status ==="
+            & $tailscaleExe status 2>&1
             Write-Error "Tailscale IP not assigned. Exiting."
             exit 1
           }
