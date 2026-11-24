@@ -33,7 +33,7 @@ jobs:
             Upper   = [char[]](65..90)
             Lower   = [char[]](97..122)
             Number  = [char[]](48..57)
-            Special = ('!@#$%^&*()_+=-'.ToCharArray())
+            Special = ('!@#$+-_'.ToCharArray())
           }
 
           $rawPassword = @()
@@ -44,14 +44,14 @@ jobs:
 
           $password = -join ($rawPassword | Sort-Object { Get-Random })
 
-          cmd /c "echo Y | net user RDP $password /add /expires:never /passwordchg:no"
-          net localgroup Administrators RDP /add
-          net localgroup "Remote Desktop Users" RDP /add
-
+          & net.exe user RDP "$password" /add /expires:never /passwordchg:no
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Failed to create RDP user"
             exit 1
           }
+
+          net.exe localgroup Administrators RDP /add
+          net.exe localgroup "Remote Desktop Users" RDP /add
 
           "RDP_CREDS=User: RDP | Password: $password" >> $env:GITHUB_ENV
 
